@@ -6,8 +6,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 //express routes
-app.use('client', express.static('client'));
-app.use('js', express.static('client/js'));
+app.use('/client', express.static('client'));
+app.use('/js', express.static('client/js'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}))
 http.listen(8080);
