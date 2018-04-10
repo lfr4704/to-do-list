@@ -8,6 +8,7 @@
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
   <script src='js/jquery.min.js'></script>
+  <script src='/socket.io/socket.io.js'></script>
  
 
   <style>
@@ -40,17 +41,32 @@
   </div>
     
   <script>
-  /*global $ */
-  $('#submit').click(function() {
-    
-    let text = $('#input').val();
-    var note = {note:text};
-    
-    console.log(text);
+  //socket io listening to the server
+  let socket = io();
+  socket.on('important', function(data) {
+    console.log(data)
+  });
   
-    $.post('https://to-do-list-lfr4704.c9users.io:8080/submitNote', note);
+  /*global $ */
+  
+    let text = $('#input').val();
+    let note = {note:text};
+  
+  $('#submit').click(function() {
+    text = $('#input').val();
+    note = {note:text};
+    sendToServer(note);
     
   });
+  
+  function sendToServer(sendData) {
+  
+    //console.log(text);
+  
+    $.post('https://to-do-list-lfr4704.c9users.io:8080/submitNote', sendData);
+  }
+  
+  
   
   </script>
 </body>

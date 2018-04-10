@@ -17,7 +17,9 @@ http.listen(8080);
 console.log("server is running");
 
 // this is a listener when someone ask for submitNote
-app.post('/submitNote', function (req, res) {
+app.post('/submitNote', function (req, result) {
     //console.log('something was submitted');
-    console.log(req.body);
+    console.log(req.body); //this consolelogs whatever we receive for submitNote
+    io.emit('important', req.body);
+    result.send(200);
 });
