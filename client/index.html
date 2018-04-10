@@ -8,10 +8,17 @@
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
   <script src='js/jquery.min.js'></script>
+ 
 
   <style>
   body {
     background-color: red;
+  }
+  
+  #output {
+    background: gray;
+    width: 400px;
+    height: 500px;
   }
     
   </style>
@@ -21,8 +28,30 @@
 
 <body>
   
+  <h1>Create New Note</h1>
+  <form action="script.php">
+    <textarea id="input"></textarea>
+    <input type="text" name=""/>
+  </form>
+    <button id="submit"> Submit new note</button>
+    
+  <h1> Current Note</h1>
+  <div id="output"> 
+  </div>
+    
   <script>
-    console.log("test");
+  /*global $ */
+  $('#submit').click(function() {
+    
+    let text = $('#input').val();
+    var note = {note:text};
+    
+    console.log(text);
+  
+    $.post('https://to-do-list-lfr4704.c9users.io:8080/submitNote', note);
+    
+  });
+  
   </script>
 </body>
 </html>

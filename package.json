@@ -9,6 +9,8 @@
     "async": "~0.2.8",
     "body-parser": "^1.18.2",
     "express": "^3.2.6",
+    "mongoose": "^5.0.14",
+    "nodemon": "^1.17.3",
     "socket.io": "^1.0.0"
   }
 }
