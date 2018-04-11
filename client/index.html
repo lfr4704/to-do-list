@@ -7,22 +7,23 @@
   <title>To do list app</title>
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
+  <link rel="stylesheet" href="client/css/styles.css?v=1.0">
   <script src='js/jquery.min.js'></script>
   <script src='/socket.io/socket.io.js'></script>
  
 
-  <style>
-  body {
-    background-color: red;
-  }
+  <!--<style>
+  /*body {*/
+  /*  background-color: red;*/
+  /*}*/
   
-  #output {
-    background: gray;
-    width: 400px;
-    height: 500px;
-  }
+  /*#output {*/
+  /*  background: gray;*/
+  /*  width: 400px;*/
+  /*  height: 500px;*/
+  /*}*/
     
-  </style>
+  /*</style>-->
 
   
 </head>
@@ -30,11 +31,12 @@
 <body>
   
   <h1>Create New Note</h1>
-  <form action="script.php">
-    <textarea id="input"></textarea>
-    <input type="text" name=""/>
-  </form>
-    <button id="submit"> Submit new note</button>
+  <div class="note-form">
+    <form>
+      <textarea id="input"></textarea>
+    </form>
+      <button id="submit"> Submit new note</button>
+    </div>
     
   <h1> Current Note</h1>
   <div id="output"> 
@@ -48,13 +50,13 @@
   });
   
   /*global $ */
-  
-    let text = $('#input').val();
-    let note = {note:text};
+    //not needed, these were default values
+    //let text = $('#input').val();
+    //let note = {note:text};
   
   $('#submit').click(function() {
-    text = $('#input').val();
-    note = {note:text};
+   let text = $('#input').val();
+    let note = {notes:text};
     sendToServer(note);
     
   });
