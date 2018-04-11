@@ -44,9 +44,13 @@
     
   <script>
   //socket io listening to the server
+  /*global $ */
   let socket = io();
   socket.on('important', function(data) {
-    console.log(data)
+    console.log(data);
+    for(let i = 0; i < data.length; i++) {
+      $('#output').append('<li class="note">' + data[i].notes + '<br/>');
+    }
   });
   
   /*global $ */
@@ -67,9 +71,7 @@
   
     $.post('https://to-do-list-lfr4704.c9users.io:8080/submitNote', sendData);
   }
-  
-  
-  
+
   </script>
 </body>
 </html>

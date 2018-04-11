@@ -43,17 +43,23 @@ console.log("server is running");
 app.post('/submitNote', function (req, result) {
     //console.log('something was submitted');
     console.log(req.body); //this consolelogs whatever we receive for submitNote
-    let firstEntry = new Schema(req.body);
     
-firstEntry.save(function(error){
+    let newNote = new Schema(req.body);
+    newNote.save(function(error){
     if(error) {
         console.log("sorry, the document was not saved:" + error);
     } else {
-        
-    } console.log("Saved");
+        console.log("Document was saved");
+    
+        Schema.find({}, function (error, notes) {
+            if(error) {
+                console.log("Sorry we had issues searching the database")
+            } else {
+                io.emit('important', notes);
+            }
+        });
+    }
 });
-    
-    
-    io.emit('important', req.body);
+
     result.send(200);
 });
