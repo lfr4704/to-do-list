@@ -46,21 +46,12 @@
   <script>
   //socket io listening to the server
   /*global $ */
+  retrieveNotes();
+  /* global io*/
   let socket = io();
   socket.on('important', function(data) {
     console.log(data);
-    $('#output').html(" "); //this line errases the code everytime you do the click of button
-    let htmlString = "<ul>";
-    
-    for(let i = 0; i < data.length; i++) {
-      htmlString = htmlString + '<li class="note">' + data[i].notes + '<br/>';
-      //this line work too but there are bugs with it
-      //$('#output').append('<li class="note">' + data[i].notes + '<br/>');
-    }
-    
-    htmlString += "</ul>";
-    //html can be used instead of append because html replaces all content that there was before and then print the new htmlString
-    $('#output').html(htmlString);
+    buildList(data);
     
   });
   
@@ -76,13 +67,48 @@
     
   });
   
+
+//the submitNote at the end of url is an argument created in the sever.js
   function sendToServer(sendData) {
-  
     //console.log(text);
-  
     $.post('https://to-do-list-lfr4704.c9users.io:8080/submitNote', sendData);
   }
+  
+  //function to create html string and avoid repetitive code
+  function buildList(data){
+          $('#output').html(" "); //this line errases the code everytime you do the click of button
+        let htmlString = "<ul>";
+    
+        for(let i = 0; i < data.length; i++) {
+          htmlString = htmlString + "<button class='delete-button' data-id=" +data[i]._id  + ">Delete</button><li class='note'>" + data[i].notes + "</li>";
+          //this next line work too but there are bugs with it
+          //$('#output').append('<li class="note">' + data[i].notes + '<br/>');
+        }
+        
+        htmlString += "</ul>";
+        //html can be used instead of append because html replaces all content that there was before and then print the new htmlString
+        $('#output').html(htmlString);
+        
+        $('.delete-button').click(function(){
+        let noteId = $(this).attr('data-id');
+        console.log(noteId);
+        });
+    
+  };
+  
 
+  
+  //getNotes at the end of url is from the attribute that was created in server.js
+  function retrieveNotes() {
+    $.get('https://to-do-list-lfr4704.c9users.io:8080/getNotes', function(data){
+      console.log(data);//this console.log is just to test data is being received.
+      buildList(data)
+        });
+      }
+      
+  function deleteAtserver(idString) {
+    $.post('https://to-do-list-lfr4704.c9users.io:8080/deleteNote')
+  }
   </script>
 </body>
 </html>

@@ -37,10 +37,23 @@ console.log("server is running");
 //     console.log("Server has started.");
 // });
 
-//this is:
-app.get('/getNotes')
+//this is getting the information from server once you reload the page
+app.get('/getNotes', function(req, result) {
+    console.log("Data requested and sent");
+    Schema.find({}, function (error, notes) {
+            if(error) {
+                console.log("Sorry we had issues searching the database")
+            } else {
+                result.send(notes);
+            }
+        });
+});
 
+//to delete notes
 
+app.post('/deleteNote', function(req, result) {
+    console.log(req.body);
+});
 
 // this is a listener when someone ask for submitNote
 app.post('/submitNote', function (req, result) {
