@@ -37,6 +37,9 @@ console.log("server is running");
 //     console.log("Server has started.");
 // });
 
+//this is:
+app.get('/getNotes')
+
 
 
 // this is a listener when someone ask for submitNote

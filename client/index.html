@@ -40,6 +40,7 @@
     
   <h1> Current Note</h1>
   <div id="output"> 
+    
   </div>
     
   <script>
@@ -48,9 +49,19 @@
   let socket = io();
   socket.on('important', function(data) {
     console.log(data);
+    $('#output').html(" "); //this line errases the code everytime you do the click of button
+    let htmlString = "<ul>";
+    
     for(let i = 0; i < data.length; i++) {
-      $('#output').append('<li class="note">' + data[i].notes + '<br/>');
+      htmlString = htmlString + '<li class="note">' + data[i].notes + '<br/>';
+      //this line work too but there are bugs with it
+      //$('#output').append('<li class="note">' + data[i].notes + '<br/>');
     }
+    
+    htmlString += "</ul>";
+    //html can be used instead of append because html replaces all content that there was before and then print the new htmlString
+    $('#output').html(htmlString);
+    
   });
   
   /*global $ */
