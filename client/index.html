@@ -33,7 +33,7 @@
   <h1>Create New Note</h1>
   <div class="note-form">
     <form>
-      <textarea id="input"></textarea>
+      <textarea id="input" type="text" placeholder="Add new note"></textarea>
     </form>
       <button id="submit"> Submit new note</button>
     </div>
@@ -44,15 +44,16 @@
   </div>
     
   <script>
-  //socket io listening to the server
+  //socket io listening to the server and is always on
   /*global $ */
-  retrieveNotes();
+  getNotes(); //first thing that happens in the index file
+ 
+  // sockets connect the server with the frontend(starts listenings to server and whaterver happens on server put infor on data)
   /* global io*/
   let socket = io();
   socket.on('important', function(data) {
-    console.log(data);
+    //console.log(data);
     buildList(data);
-    
   });
   
   /*global $ */
@@ -61,26 +62,56 @@
     //let note = {note:text};
   
   $('#submit').click(function() {
-   let text = $('#input').val();
-    let note = {notes:text};
-    sendToServer(note);
-    
+    //this updates html page wiht all the notes from the database
+    sendNote( $('#input').val() );
   });
   
-
-//the submitNote at the end of url is an argument created in the sever.js
-  function sendToServer(sendData) {
-    //console.log(text);
-    $.post('https://to-do-list-lfr4704.c9users.io:8080/submitNote', sendData);
+    function updateNote(idString, noteString){
+    
+   let dataObject = {
+    _id: idString,
+    notes: noteString
+  }
+    
+     $.post('https://to-do-list-lfr4704.c9users.io:8080/updateNote', dataObject);
+     getNotes();
   }
   
-  //function to create html string and avoid repetitive code
+  
+//the submitNote at the end of url is an argument created in the sever.js
+  function sendNote(text) {
+    //console.log(text);
+    let note = {
+      notes: text
+    };
+    
+    $.post('https://to-do-list-lfr4704.c9users.io:8080/submitNote', note);
+    getNotes();
+  }  
+  
+  function deleteNotes(idString) {
+   let dataObject = {
+    _id: idString,
+  };
+     $.post('https://to-do-list-lfr4704.c9users.io:8080/deleteNote', dataObject);
+    getNotes();//this refresh the notes after deleting
+  }
+  
+  //getNotes at the end of url is from the attribute that was created in server.js
+  function getNotes() {
+    $.get('https://to-do-list-lfr4704.c9users.io:8080/getNotes', function(data){
+      //console.log(data);//this console.log is just to test data is being received.
+      buildList(data)
+        });
+  }
+  
+   //function to create html string and avoid repetitive code
   function buildList(data){
-          $('#output').html(" "); //this line errases the code everytime you do the click of button
+          
         let htmlString = "<ul>";
     
         for(let i = 0; i < data.length; i++) {
-          htmlString = htmlString + "<button class='delete-button' data-id=" +data[i]._id  + ">Delete</button><li class='note'>" + data[i].notes + "</li>";
+          htmlString = htmlString + "<button class='update-button' data-id=" + data[i]._id  + ">Update</button><button class='delete-button' data-id=" + data[i]._id  + ">Delete</button><li class='note'>" + data[i].notes + "</li>";
           //this next line work too but there are bugs with it
           //$('#output').append('<li class="note">' + data[i].notes + '<br/>');
         }
@@ -91,24 +122,27 @@
         
         $('.delete-button').click(function(){
         let noteId = $(this).attr('data-id');
-        console.log(noteId);
+        //console.log(noteId);
+        //the next lines of code were moved to deleteNote function
+        // let dataObject = {
+        //   _id: noteId,
+        //   note: Text,
+          
+        // };
+        //console.log(dataObject);
+        deleteNotes(noteId);
+        });
+        
+        $('.update-button').click(function (){
+          let noteId = $(this).attr('data-id');
+          let noteText = $(this).next().next().text();
+          
+          updateNote(noteId, noteText + "!");
+          console.log(noteText);
         });
     
   };
   
-
-  
-  //getNotes at the end of url is from the attribute that was created in server.js
-  function retrieveNotes() {
-    $.get('https://to-do-list-lfr4704.c9users.io:8080/getNotes', function(data){
-      console.log(data);//this console.log is just to test data is being received.
-      buildList(data)
-        });
-      }
-      
-  function deleteAtserver(idString) {
-    $.post('https://to-do-list-lfr4704.c9users.io:8080/deleteNote')
-  }
   </script>
 </body>
 </html>
