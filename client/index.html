@@ -7,141 +7,120 @@
   <title>To do list app</title>
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
-  <link rel="stylesheet" href="client/css/styles.css?v=1.0">
+  
   <script src='js/jquery.min.js'></script>
   <script src='/socket.io/socket.io.js'></script>
- 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css?v=1.0">
 
-  <!--<style>
-  /*body {*/
-  /*  background-color: red;*/
-  /*}*/
-  
-  /*#output {*/
-  /*  background: gray;*/
-  /*  width: 400px;*/
-  /*  height: 500px;*/
-  /*}*/
-    
-  /*</style>-->
-
-  
 </head>
+
 
 <body>
   
   <h1>Create New Note</h1>
-  <div class="note-form">
-    <form>
-      <textarea id="input" type="text" placeholder="Add new note"></textarea>
-    </form>
-      <button id="submit"> Submit new note</button>
-    </div>
+  
+  <div>
     
-  <h1> Current Note</h1>
-  <div id="output"> 
+    <ul>
+      <div>
+        <textarea id="input" class='form-control' type='text' placeholder="Add new note"></textarea>
+      </div>
+      <button id="submit" class="btn btn-primary"> Submit new note</button>
+    </ul>
     
   </div>
     
+  <h1> Current Note</h1>
+  
+  <div id="output"> 
+    
+  </div>
+  
   <script>
-  //socket io listening to the server and is always on
-  /*global $ */
-  getNotes(); //first thing that happens in the index file
- 
-  // sockets connect the server with the frontend(starts listenings to server and whaterver happens on server put infor on data)
-  /* global io*/
-  let socket = io();
-  socket.on('important', function(data) {
-    //console.log(data);
+  /* global $ io*/
+  getNotes();
+
+  var socket = io();
+  socket.on('important', function (data) {
     buildList(data);
   });
   
-  /*global $ */
-    //not needed, these were default values
-    //let text = $('#input').val();
-    //let note = {note:text};
-  
-  $('#submit').click(function() {
-    //this updates html page wiht all the notes from the database
+  $('#submit').click(function () {
     sendNote( $('#input').val() );
   });
   
-    function updateNote(idString, noteString){
+  function updateNote(idString, noteString) {
     
-   let dataObject = {
-    _id: idString,
-    notes: noteString
-  }
+    var dataObject = {
+      _id: idString,
+      notes: noteString
+    }
     
-     $.post('https://to-do-list-lfr4704.c9users.io:8080/updateNote', dataObject);
-     getNotes();
+    $.post('https://to-do-list-lfr4704.c9users.io/updateNote', dataObject);
+    getNotes();
   }
   
-  
-//the submitNote at the end of url is an argument created in the sever.js
   function sendNote(text) {
-    //console.log(text);
-    let note = {
+    
+    var note = {
       notes: text
     };
     
-    $.post('https://to-do-list-lfr4704.c9users.io:8080/submitNote', note);
+    $.post('https://to-do-list-lfr4704.c9users.io/submitNote', note);
     getNotes();
-  }  
-  
-  function deleteNotes(idString) {
-   let dataObject = {
-    _id: idString,
-  };
-     $.post('https://to-do-list-lfr4704.c9users.io:8080/deleteNote', dataObject);
-    getNotes();//this refresh the notes after deleting
+    
   }
   
-  //getNotes at the end of url is from the attribute that was created in server.js
+  function deleteNote(idString) {
+    
+    var dataObject = {
+      _id: idString,
+    };
+    
+    $.post('https://to-do-list-lfr4704.c9users.io/deleteNote', dataObject);
+    getNotes();
+  }
+  
   function getNotes() {
-    $.get('https://to-do-list-lfr4704.c9users.io:8080/getNotes', function(data){
-      //console.log(data);//this console.log is just to test data is being received.
-      buildList(data)
-        });
+      $.get('https://to-do-list-lfr4704.c9users.io/getNotes', function(data) {
+      console.log(data);
+      buildList(data);
+    });
   }
   
-   //function to create html string and avoid repetitive code
-  function buildList(data){
-          
-        let htmlString = "<ul>";
+  function buildList(data) {
     
-        for(let i = 0; i < data.length; i++) {
-          htmlString = htmlString + "<button class='update-button' data-id=" + data[i]._id  + ">Update</button><button class='delete-button' data-id=" + data[i]._id  + ">Delete</button><li class='note'>" + data[i].notes + "</li>";
-          //this next line work too but there are bugs with it
-          //$('#output').append('<li class="note">' + data[i].notes + '<br/>');
-        }
-        
-        htmlString += "</ul>";
-        //html can be used instead of append because html replaces all content that there was before and then print the new htmlString
-        $('#output').html(htmlString);
-        
-        $('.delete-button').click(function(){
-        let noteId = $(this).attr('data-id');
-        //console.log(noteId);
-        //the next lines of code were moved to deleteNote function
-        // let dataObject = {
-        //   _id: noteId,
-        //   note: Text,
-          
-        // };
-        //console.log(dataObject);
-        deleteNotes(noteId);
-        });
-        
-        $('.update-button').click(function (){
-          let noteId = $(this).attr('data-id');
-          let noteText = $(this).next().next().text();
-          
-          updateNote(noteId, noteText + "!");
-          console.log(noteText);
-        });
+    var htmlString = "<ul>";
     
-  };
+    for (var i = 0; i < data.length; i++){
+      htmlString = htmlString + 
+       "<button class='update-button btn btn-primary' data-id=" + data[i]._id  + ">Update</button><button class='delete-button btn btn-default' data-id=" + data[i]._id  + ">Delete</button><div><textarea class='note form-control' type='text'>" + data[i].notes + "</textarea></div>";
+    }
+    
+    htmlString += "</ul>";
+    
+    $("#output").html(htmlString);
+    
+    $('.delete-button').click(function () {
+    var noteId = $(this).attr('data-id');
+    deleteNote(noteId);
+    });
+    
+    $('.update-button').click(function () {
+      var noteId = $(this).attr('data-id');
+      var noteText = $(this).next().next().text();
+      
+      updateNote(noteId, noteText + "!");
+      console.log(noteText);
+      
+    });
+  } 
+  
+  //https://codeshare.io/5RlPRL
   
   </script>
 </body>
